@@ -60,3 +60,6 @@ Create a `.env` file in the root directory and add the following variables:
 BOT_TOKEN=your_telegram_bot_token
 DATABASE_URL=postgresql://your_user:your_password@localhost:5432/your_database_name
 ```
+- Replace `your_telegram_bot_token` with your bot's token from BotFather.
+- Replace `your_user`, `your_password`, and `your_database_name` with the appropriate credentials for your PostgreSQL database.
+
