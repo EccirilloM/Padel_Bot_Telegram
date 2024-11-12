@@ -92,20 +92,21 @@ Example:
 ---
 
 **`/addcalendar <username> <polimi schedule>`**  
-Adds a lesson schedule for a player. You can specify another player's schedule by using their username, or if you omit the username, the schedule will be added for the sender of the command.
+Adds a lesson schedule for a player. You can specify another player's schedule by using their username, or if you omit the username, the schedule will be added for the sender of the command. The schedule must be in the format used by **Politecnico di Milano** for lessons.
 
 Example:  
-`/addcalendar @john "Mon 08:00-10:00, Wed 10:00-12:00"`  
-`/addcalendar "Mon 08:00-10:00, Fri 14:00-16:00"` (uses your Telegram username)
+`/addcalendar @john "Lun 08:00-10:00, Mer 10:00-12:00"`  
+`/addcalendar "Lun 08:00-10:00, Ven 14:00-16:00"` (uses your Telegram username)
 
 ---
 
-**`/updatecalendar <username> <schedule>`**  
-Updates the lesson schedule for a player. Similar to `/addcalendar`, you can specify a player's username or use the sender's username.
+**`/updatecalendar <username> <polimi schedule>`**  
+Updates the lesson schedule for a player. Similar to `/addcalendar`, you can specify a player's username or use the sender's username. The schedule must be in the format used by **Politecnico di Milano** for lessons.
 
 Example:  
-`/updatecalendar @john "Mon 08:00-10:00, Fri 14:00-16:00"`  
-`/updatecalendar "Mon 08:00-10:00, Fri 14:00-16:00"` (uses your Telegram username)
+`/updatecalendar @john "Lun 08:00-10:00, Ven 14:00-16:00"`  
+`/updatecalendar "Lun 08:00-10:00, Ven 14:00-16:00"` (uses your Telegram username)
+
 
 ---
 
