@@ -91,7 +91,7 @@ Example:
 
 ---
 
-**`/addcalendar <username> <schedule>`**  
+**`/addcalendar <username> <polimi schedule>`**  
 Adds a lesson schedule for a player. You can specify another player's schedule by using their username, or if you omit the username, the schedule will be added for the sender of the command.
 
 Example:  
@@ -130,5 +130,33 @@ Shows a message detailing all available commands and their usage.
 
 Example:  
 `/help`
+
+### Database Schema
+
+The database schema is managed using **Prisma ORM**. It stores information about players and their lesson schedules. The **Player** table includes the following fields:
+
+- **username**: The player's Telegram username.
+- **level**: The player's skill level.
+- **calendars**: The player's lesson schedules, including start and end times for specific days.
+
+### Database Migration
+
+If you need to set up the database schema, you can run the following Prisma migration command:
+
+```bash
+npx prisma migrate dev
+```
+
+This will create the necessary tables in your PostgreSQL database.
+
+### Contribution
+
+Feel free to contribute to this project! If you find any issues or want to add new features, open an issue or submit a pull request.
+
+### License
+
+This project is open-source and available under the **MIT License**.
+
+Padel Telegram Bot is designed and developed by **Ettore Cirillo**.
 
 
