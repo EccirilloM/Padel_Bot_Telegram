@@ -63,3 +63,11 @@ DATABASE_URL=postgresql://your_user:your_password@localhost:5432/your_database_n
 - Replace `your_telegram_bot_token` with your bot's token from BotFather.
 - Replace `your_user`, `your_password`, and `your_database_name` with the appropriate credentials for your PostgreSQL database.
 
+### Run the Bot
+
+Once you’ve set up the environment variables and installed the dependencies, you can run the bot with the following command:
+
+```bash
+npm start
+```
+
