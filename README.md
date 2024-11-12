@@ -73,39 +73,43 @@ npm start
 
 ### Commands
 
-**/register <username> <level>**  
-Registers a new player with a specified username and skill level.
+**`/register <username> <level>`**  
+Registers a new player with a specified username and skill level. If no username is provided, it uses the Telegram username of the user issuing the command.
 
-Example:  
-`/register @john 3.5`
-
----
-
-**/update <username> <new level>**  
-Updates the skill level of an existing player.
-
-Example:  
-`/update @john 4.0`
+Examples:  
+`/register @john 3.5`  
+`/register 3.5` (uses your Telegram username)
 
 ---
 
-**/addcalendar <username> <schedule>**  
+**`/update <username> <new level>`**  
+Updates the skill level of an existing player. If no username is provided, it uses the Telegram username of the user issuing the command.
+
+Example:  
+`/update @john 4.0`  
+`/update 4.0` (uses your Telegram username)
+
+---
+
+**`/addcalendar <username> <schedule>`**  
 Adds a lesson schedule for a player. You can specify another player's schedule by using their username, or if you omit the username, the schedule will be added for the sender of the command.
 
 Example:  
-`/addcalendar @john "Mon 08:00-10:00, Wed 10:00-12:00"`
+`/addcalendar @john "Mon 08:00-10:00, Wed 10:00-12:00"`  
+`/addcalendar "Mon 08:00-10:00, Fri 14:00-16:00"` (uses your Telegram username)
 
 ---
 
-**/updatecalendar <username> <schedule>**  
+**`/updatecalendar <username> <schedule>`**  
 Updates the lesson schedule for a player. Similar to `/addcalendar`, you can specify a player's username or use the sender's username.
 
 Example:  
-`/updatecalendar @john "Mon 08:00-10:00, Fri 14:00-16:00"`
+`/updatecalendar @john "Mon 08:00-10:00, Fri 14:00-16:00"`  
+`/updatecalendar "Mon 08:00-10:00, Fri 14:00-16:00"` (uses your Telegram username)
 
 ---
 
-**/showplayers <day>**  
+**`/showplayers <day>`**  
 Displays all players who are available for padel on the specified day.
 
 Example:  
@@ -113,7 +117,7 @@ Example:
 
 ---
 
-**/showplayeron <username> <day>**  
+**`/showplayeron <username> <day>`**  
 Displays the available time slots for a specific player on the specified day.
 
 Example:  
@@ -121,9 +125,10 @@ Example:
 
 ---
 
-**/help**  
+**`/help`**  
 Shows a message detailing all available commands and their usage.
 
 Example:  
 `/help`
+
 
