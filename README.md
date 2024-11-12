@@ -39,16 +39,18 @@ To get the bot running locally or on a server, ensure you have the following too
 
 First, clone the repository to your local machine:
 
-````bash
+```bash
 git clone https://github.com/EccirilloM/Padel_Bot_Telegram.git
 cd Padel_Bot_Telegram
+```
 
 ### Install Dependencies
+
 Once inside the project directory, install the required dependencies:
 
 ```bash
 npm install
-````
+```
 
 ### Setup Environment Variables
 
