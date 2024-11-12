@@ -71,3 +71,59 @@ Once you’ve set up the environment variables and installed the dependencies, y
 npm start
 ```
 
+### Commands
+
+**/register <username> <level>**  
+Registers a new player with a specified username and skill level.
+
+Example:  
+`/register @john 3.5`
+
+---
+
+**/update <username> <new level>**  
+Updates the skill level of an existing player.
+
+Example:  
+`/update @john 4.0`
+
+---
+
+**/addcalendar <username> <schedule>**  
+Adds a lesson schedule for a player. You can specify another player's schedule by using their username, or if you omit the username, the schedule will be added for the sender of the command.
+
+Example:  
+`/addcalendar @john "Mon 08:00-10:00, Wed 10:00-12:00"`
+
+---
+
+**/updatecalendar <username> <schedule>**  
+Updates the lesson schedule for a player. Similar to `/addcalendar`, you can specify a player's username or use the sender's username.
+
+Example:  
+`/updatecalendar @john "Mon 08:00-10:00, Fri 14:00-16:00"`
+
+---
+
+**/showplayers <day>**  
+Displays all players who are available for padel on the specified day.
+
+Example:  
+`/showplayers Monday`
+
+---
+
+**/showplayeron <username> <day>**  
+Displays the available time slots for a specific player on the specified day.
+
+Example:  
+`/showplayeron @john Monday`
+
+---
+
+**/help**  
+Shows a message detailing all available commands and their usage.
+
+Example:  
+`/help`
+
