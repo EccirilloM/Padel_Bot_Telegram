@@ -6,7 +6,7 @@ import addCalendarCommand from './addCalendar';
 import showScheduleWeekCommand from './showScheduleWeek';
 import updateCalendarCommand from './updatecalendar';
 import showPlayersOnCommand from './showplayerson';
-import showPlayerWeekCommand from './showPlayerWeek';
+import showPlayerWeekCommand from './showPlayersWeek';
 import helpCommand from './help';
 
 

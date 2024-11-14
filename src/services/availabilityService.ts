@@ -45,50 +45,31 @@ export const getPlayerAvailabilityForDay = async (day: string, requestingUsernam
 };
 
 export const getMutualWeeklyAvailability = async (
-  requestingUsername: string,
-  targetUsername: string
+  usernames: string[]
 ): Promise<WeeklyPlayerAvailability | null> => {
-  const requestingPlayerSchedule = await getWeeklyScheduleForPlayer(requestingUsername);
-  const targetPlayerSchedule = await getWeeklyScheduleForPlayer(targetUsername);
+  const playersSchedules = await Promise.all(usernames.map(getWeeklyScheduleForPlayer));
 
   const dailyAvailability: DailyAvailability[] = [];
-
   const daysOfWeek = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"];
 
   for (const day of daysOfWeek) {
-    // Recupera gli slot occupati per ciascun utente nel giorno specifico
-    const occupiedSlotsRequestingUser = requestingPlayerSchedule
-      .flatMap(course => course.lectures)
+    // Combina gli slot occupati di tutti i giocatori per il giorno specifico
+    const combinedOccupiedSlots: TimeSlot[] = playersSchedules
+      .flatMap(schedule => schedule.flatMap(course => course.lectures))
       .filter(lecture => lecture.day.toLowerCase() === day.toLowerCase())
       .map(lecture => ({
         startTime: lecture.startTime,
         endTime: lecture.endTime,
-      }));
-
-    const occupiedSlotsTargetUser = targetPlayerSchedule
-      .flatMap(course => course.lectures)
-      .filter(lecture => lecture.day.toLowerCase() === day.toLowerCase())
-      .map(lecture => ({
-        startTime: lecture.startTime,
-        endTime: lecture.endTime,
-      }));
-
-    // Unisci gli slot occupati dei due utenti e ordina cronologicamente
-    const combinedOccupiedSlots: TimeSlot[] = [...occupiedSlotsRequestingUser, ...occupiedSlotsTargetUser]
+      }))
       .sort((a, b) => a.startTime.localeCompare(b.startTime));
 
-    // Calcola gli slot liberi comuni basati sugli slot occupati combinati
+    // Calcola gli slot liberi comuni tra tutti i giocatori
     const mutualFreeSlots = calculateFreeSlots(combinedOccupiedSlots);
-
-    // Aggiungi la disponibilità giornaliera alla lista settimanale
-    dailyAvailability.push({
-      day,
-      freeSlots: mutualFreeSlots,
-    });
+    dailyAvailability.push({ day, freeSlots: mutualFreeSlots });
   }
 
   return {
-    username: targetUsername,
+    usernames,  // Ora è compatibile con l'interfaccia aggiornata
     dailyAvailability,
   };
 };

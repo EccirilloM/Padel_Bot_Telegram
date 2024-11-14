@@ -2,6 +2,6 @@
 import { DailyAvailability } from './DailyAvailability';
 
 export interface WeeklyPlayerAvailability {
-    username: string;
+    usernames: string[];
     dailyAvailability: DailyAvailability[];
   }

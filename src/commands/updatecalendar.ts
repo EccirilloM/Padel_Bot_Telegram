@@ -8,20 +8,19 @@ const updateCalendarCommand = (bot: Telegraf) => {
   bot.command('updatecalendar', async (ctx: Context) => {
     try {
       const message = ctx.message;
-      const senderUsername = ctx.from?.username;
 
       if (!message || !isTextMessage(message)) {
         ctx.reply('Per favore, invia il calendario come testo dopo il comando /updatecalendar.');
         return;
       }
 
-      const result = parseCommandArguments(message.text, senderUsername);
+      const result = parseCommandArguments(message.text);
       if (!result) {
         ctx.reply('Non è stato possibile rilevare l’username o il calendario.');
         return;
       }
 
-      const { username, args } = result;
+      const { usernames, args } = result;
       const calendarText = args.join(' ').trim();
       const newCourses = parseCourseData(calendarText);
 
@@ -30,8 +29,17 @@ const updateCalendarCommand = (bot: Telegraf) => {
         return;
       }
 
-      await updateCalendarForPlayer(username, newCourses);
-      ctx.reply(`Calendario aggiornato con successo per ${username}!`);
+      let response = '';
+      for (const username of usernames) {
+        try {
+          await updateCalendarForPlayer(username, newCourses);
+          response += `Calendario aggiornato con successo per @${username}!\n`;
+        } catch (error) {
+          response += `Errore durante l'aggiornamento del calendario per @${username}: ${error.message}\n`;
+        }
+      }
+
+      ctx.reply(response.trim());
     } catch (err) {
       ctx.reply(`Errore durante l'aggiornamento del calendario: ${err.message}`);
     }

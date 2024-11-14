@@ -8,7 +8,6 @@ const addCalendarCommand = (bot: Telegraf) => {
   bot.command('addcalendar', async (ctx: Context) => {
     try {
       const message = ctx.message;
-      const senderUsername = ctx.from?.username;
 
       // Verifica che il messaggio sia di tipo testo
       if (!message || !isTextMessage(message)) {
@@ -16,14 +15,14 @@ const addCalendarCommand = (bot: Telegraf) => {
         return;
       }
 
-      const result = parseCommandArguments(message.text, senderUsername);
+      const result = parseCommandArguments(message.text);
 
       if (!result) {
         ctx.reply('Non è stato possibile rilevare l’username o il calendario.');
         return;
       }
 
-      const { username, args } = result;
+      const { usernames, args } = result;
       const calendarText = args.join(' ').trim();
       const courses = parseCourseData(calendarText);
 
@@ -32,8 +31,11 @@ const addCalendarCommand = (bot: Telegraf) => {
         return;
       }
 
-      await addCalendarToPlayer(username, courses);
-      ctx.reply(`Calendario aggiunto con successo per ${username}!`);
+      // Aggiunge il calendario per ciascun utente specificato
+      for (const username of usernames) {
+        await addCalendarToPlayer(username, courses);
+        ctx.reply(`Calendario aggiunto con successo per ${username}!`);
+      }
     } catch (err) {
       ctx.reply(`Errore durante l'aggiunta del calendario: ${err.message}`);
     }
