@@ -5,6 +5,8 @@ import showplayersCommand  from './showPlayers';
 import addCalendarCommand from './addCalendar';
 import showScheduleWeekCommand from './showScheduleWeek';
 import updateCalendarCommand from './updatecalendar';
+import showPlayersOnCommand from './showplayerson';
+import showPlayerWeekCommand from './showPlayerWeek';
 import helpCommand from './help';
 
 
@@ -16,5 +18,7 @@ export default (bot: Telegraf) => {
   addCalendarCommand(bot);
   showScheduleWeekCommand(bot);
   updateCalendarCommand(bot);
+  showPlayersOnCommand(bot);
+  showPlayerWeekCommand(bot);
   // Aggiungi altre registrazioni di comandi qui
 };
