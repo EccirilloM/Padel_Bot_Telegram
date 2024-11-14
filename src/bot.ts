@@ -13,14 +13,10 @@ allCommands(bot);
 
 // Imposta i comandi suggeriti
 bot.telegram.setMyCommands([
-  { command: 'register', description: '(username livello*) registra un giocatore con il livello' },
-  { command: 'update', description: '(username livello*) aggiorna il livello del giocatore' },
-  { command: 'addcalendar', description: '(orario polimi testuale) aggiunge calendario' },
-  { command: 'updatecalendar', description: '(orario polimi testuale) aggiorna calendario' },
-  { command: 'showplayeron', description: '(username giorno) mostra se il giocatore può giocare quel giorno' },
-  { command: 'showplayerson', description: '(giorno) mostra tutti i giocatori del giorno' },
-  {command: 'showplayers', description: 'Mostra tutti i giocatori registrati'},
+  { command: 'register', description: '(@username livello*) registra un giocatore con il livello' },
+  { command: 'update', description: '(@username livello*) aggiorna il livello del giocatore' },
+  { command: 'showplayers', description: 'Mostra tutti i giocatori registrati' },
+  { command: 'addcalendar', description: '(@username calendario) aggiunge un calendario al giocatore' },
+  { command: 'showscheduleweek', description: 'Mostra l’orario settimanale dei corsi attivi' },
   { command: 'help', description: 'Mostra una guida al bot' },
 ]);
-
-

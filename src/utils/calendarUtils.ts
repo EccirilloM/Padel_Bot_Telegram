@@ -1,19 +1,81 @@
-import { CalendarItem } from '../models/CalendarItem';
+// utils/calendarUtils.ts
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import { ParsedCourse } from '../models/ParsedCourse';
 
-export function parseCalendar(text: string): CalendarItem[] {
-  const lines = text.split('\n');
-  const schedule: CalendarItem[] = [];
+// Estendi dayjs con il plugin customParseFormat per supportare formati di parsing personalizzati
+dayjs.extend(customParseFormat);
 
-  lines.forEach((line) => {
-    // Estrae il giorno e gli orari di inizio e fine per ogni lezione
-    const dayTimeRegex = /(Lunedì|Martedì|Mercoledì|Giovedì|Venerdì|Sabato|Domenica) dalle (\d{2}:\d{2}) alle (\d{2}:\d{2})/;
-    const match = line.match(dayTimeRegex);
-    
-    if (match) {
-      const [_, day, startTime, endTime] = match;
-      schedule.push({ day, startTime, endTime });
-    }
+export function parseCourseData(text: string): ParsedCourse[] {
+  const courseBlocks = text.split(/(?=\d{6}\s+-\s+[A-Z\s]+)/g);
+
+  courseBlocks.forEach((block, index) => {
   });
 
-  return schedule;
+  const courses: ParsedCourse[] = [];
+
+  // Pattern per estrarre le informazioni del corso
+  const coursePattern = /(\d+)\s*-\s*([^\(]+)\s+\(Docente: .+\)\s*Inizio lezioni:\s*(\d{2}\/\d{2}\/\d{4})\s+Fine lezioni:\s*(\d{2}\/\d{2}\/\d{4})/;
+  
+  // Pattern flessibile per estrarre le lezioni
+  const lecturePattern = /(Lunedì|Martedì|Mercoledì|Giovedì|Venerdì|Sabato|Domenica)\s+dalle\s+(\d{2}:\d{2})\s+alle\s+(\d{2}:\d{2})/g;
+
+  for (const block of courseBlocks) {
+    const courseMatch = coursePattern.exec(block);
+    if (!courseMatch) {
+      console.error("Formato corso non valido:", block);
+      continue;
+    }
+
+    const [_, code, name, startDate, endDate] = courseMatch;
+    const parsedStartDate = dayjs(startDate, 'DD/MM/YYYY');
+    const parsedEndDate = dayjs(endDate, 'DD/MM/YYYY');
+
+    if (!parsedStartDate.isValid() || !parsedEndDate.isValid()) {
+      console.error(`Errore nel parsing delle date per il corso: ${name}`);
+      continue;
+    }
+
+    const parsedCourse: ParsedCourse = {
+      code,
+      name: name.trim(),
+      startDate: parsedStartDate.toDate(),
+      endDate: parsedEndDate.toDate(),
+      lectures: []
+    };
+
+    // Estrai tutte le lezioni presenti nel blocco
+    const lectures = [...block.matchAll(lecturePattern)];
+    lectures.forEach((lectureMatch) => {
+      const [_, day, startTime, endTime] = lectureMatch;
+      parsedCourse.lectures.push({
+        day,
+        startTime,
+        endTime
+      });
+    });
+
+    if (parsedCourse.lectures.length === 0) {
+      console.warn(`Nessuna lezione trovata per il corso: ${name}`);
+    }
+
+    courses.push(parsedCourse);
+  }
+
+
+  return courses;
+}
+
+/**
+ * Filtra i corsi attivi in base alla data corrente.
+ * @param courses Lista dei corsi da filtrare.
+ * @returns Corsi che sono ancora attivi.
+ */
+export function filterActiveCourses(courses: ParsedCourse[]): ParsedCourse[] {
+  const today = dayjs();
+
+  return courses.filter(course => 
+    dayjs(course.startDate).isBefore(today) && 
+    dayjs(course.endDate).isAfter(today)
+  );
 }

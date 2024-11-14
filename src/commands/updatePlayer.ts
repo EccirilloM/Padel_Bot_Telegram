@@ -1,52 +1,43 @@
+// commands/updatePlayerCommand.ts
 import { Telegraf, Context } from 'telegraf';
 import { updatePlayerLevel } from '../services/playerService';
-import { isTextMessage } from '../utils/messageUtils';
+import { isTextMessage, parseCommandArguments } from '../utils/messageUtils';
 
 const updatePlayerCommand = (bot: Telegraf) => {
-  bot.command('update', async (ctx: Context, next) => {
+  bot.command('update', async (ctx: Context) => {
     try {
       const message = ctx.message;
       const senderUsername = ctx.from?.username;
 
       if (!message || !isTextMessage(message)) {
-        ctx.reply('Per favore, fornisci i dati nel formato: /update <username> <nuovo livello> o /update <nuovo livello> per aggiornare il tuo profilo.');
+        ctx.reply('Formato non valido. Usa: /update <@username> <livello> o /update <livello> per aggiornare il tuo livello.');
         return;
       }
 
-      const args = message.text.split(' ');
+      const result = parseCommandArguments(message.text, senderUsername);
 
-      let username: string | undefined;
-      let newLevel: number | undefined;
-
-      if (args.length === 3) {
-        username = args[1].startsWith('@') ? args[1].substring(1) : args[1]; // Rimuove '@' se presente
-        newLevel = parseFloat(args[2]);
-      } else if (args.length === 2) {
-        username = senderUsername;
-        newLevel = parseFloat(args[1]);
-      } else {
-        ctx.reply('Formato non valido. Usa: /update <username> <nuovo livello> o /update <nuovo livello> per aggiornare il tuo profilo.');
+      if (!result) {
+        ctx.reply('Formato non valido. Usa: /update <@username> <livello> o /update <livello> per aggiornare il tuo livello.');
         return;
       }
 
-      if (!username || isNaN(newLevel!)) {
-        ctx.reply('Formato non valido. Assicurati di fornire un livello numerico.');
+      const { username, args } = result;
+      const level = parseFloat(args[0]);
+
+      if (isNaN(level)) {
+        ctx.reply('Livello non valido. Assicurati di fornire un numero.');
         return;
       }
 
-      const player = await updatePlayerLevel(username, newLevel!);
-
-      if (player) {
-        ctx.reply(`Livello aggiornato con successo! Username: ${player.username}, Nuovo Livello: ${player.level}`);
-      } else {
-        ctx.reply('Errore durante l\'aggiornamento.');
-      }
-
-      await next();
+      const updatedPlayer = await updatePlayerLevel(username, level);
+      ctx.reply(`Livello aggiornato! Username: ${updatedPlayer.username}, Nuovo livello: ${updatedPlayer.level}`);
     } catch (err) {
-      ctx.reply(`Errore durante l'aggiornamento: ${err.message}`);
+      if (err instanceof Error) {
+        ctx.reply(`Errore durante l'aggiornamento: ${err.message}`);
+      }
     }
   });
 };
 
 export default updatePlayerCommand;
+

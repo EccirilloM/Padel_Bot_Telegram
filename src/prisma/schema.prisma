@@ -7,18 +7,44 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Calendar {
-  id        Int    @id @default(autoincrement())
-  day       String // Giorno della settimana (es. "Lunedì", "Martedì", ecc.)
-  startTime String // Ora di inizio (es. "08:15")
-  endTime   String // Ora di fine (es. "10:15")
-  userId    Int // Collegamento con l'utente
-  user      Player @relation(fields: [userId], references: [id]) // Collegamento corretto
-}
+// schema.prisma
+
+// schema.prisma
 
 model Player {
   id        Int        @id @default(autoincrement())
   username  String     @unique
-  level     Float
-  calendars Calendar[] // Relazione con il calendario
+  level     Int
+  calendars Calendar[]
+}
+
+model Course {
+  id          Int        @id @default(autoincrement())
+  code        String     @unique
+  name        String
+  courseStart DateTime // Data di inizio del corso
+  courseEnd   DateTime // Data di fine del corso
+  lectures    Lecture[] // Lezioni del corso
+  calendars   Calendar[] // Calendari collegati al corso
+}
+
+model Lecture {
+  id        Int       @id @default(autoincrement())
+  day       String // Giorno della settimana (e.g., "Lunedì")
+  startTime DateTime // Orario di inizio della lezione
+  endTime   DateTime // Orario di fine della lezione
+  endDate   DateTime? // Data di fine opzionale per una lezione specifica
+  courseId  Int
+  course    Course    @relation(fields: [courseId], references: [id])
+}
+
+model Calendar {
+  id        Int      @id @default(autoincrement())
+  playerId  Int // Relazione con lo studente
+  courseId  Int // Relazione con il corso
+  startTime DateTime // Orario di inizio della lezione nel calendario
+  endTime   DateTime // Orario di fine della lezione nel calendario
+  day       String // Giorno della settimana
+  player    Player   @relation(fields: [playerId], references: [id])
+  course    Course   @relation(fields: [courseId], references: [id])
 }
