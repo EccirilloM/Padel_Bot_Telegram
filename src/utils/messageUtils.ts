@@ -13,12 +13,19 @@ export function escapeMarkdown(text: string): string {
 // Funzione unificata per estrarre username e argomenti
 export function parseCommandArguments(text: string, senderUsername: string | undefined): { username: string; args: string[] } | null {
   const parts = text.trim().split(/\s+/);
-  if (parts.length < 2) return null;
 
   let username: string;
   let args: string[];
 
-  if (parts[1].startsWith('@')) {
+  if (parts.length < 2) {
+    if (senderUsername) {
+      // Se non ci sono argomenti ma esiste `senderUsername`, usalo come username
+      username = senderUsername;
+      args = [];
+    } else {
+      return null; // Se non ci sono argomenti e non c'è `senderUsername`, restituisci `null`
+    }
+  } else if (parts[1].startsWith('@')) {
     username = parts[1].substring(1);
     args = parts.slice(2);
   } else {

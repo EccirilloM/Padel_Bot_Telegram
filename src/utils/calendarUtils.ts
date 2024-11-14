@@ -23,7 +23,6 @@ export function parseCourseData(text: string): ParsedCourse[] {
   for (const block of courseBlocks) {
     const courseMatch = coursePattern.exec(block);
     if (!courseMatch) {
-      console.error("Formato corso non valido:", block);
       continue;
     }
 
@@ -32,7 +31,6 @@ export function parseCourseData(text: string): ParsedCourse[] {
     const parsedEndDate = dayjs(endDate, 'DD/MM/YYYY');
 
     if (!parsedStartDate.isValid() || !parsedEndDate.isValid()) {
-      console.error(`Errore nel parsing delle date per il corso: ${name}`);
       continue;
     }
 
@@ -56,7 +54,6 @@ export function parseCourseData(text: string): ParsedCourse[] {
     });
 
     if (parsedCourse.lectures.length === 0) {
-      console.warn(`Nessuna lezione trovata per il corso: ${name}`);
     }
 
     courses.push(parsedCourse);

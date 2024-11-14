@@ -22,7 +22,6 @@ const showPlayersCommand = (bot: Telegraf) => {
 
       ctx.reply(response, { parse_mode: 'MarkdownV2' });
     } catch (err) {
-      console.error('Errore durante il recupero dei giocatori:', err);
       ctx.reply('Errore durante la visualizzazione dei giocatori.');
     }
   });

@@ -18,5 +18,6 @@ bot.telegram.setMyCommands([
   { command: 'showplayers', description: 'Mostra tutti i giocatori registrati' },
   { command: 'addcalendar', description: '(@username calendario) aggiunge un calendario al giocatore' },
   { command: 'showscheduleweek', description: 'Mostra l’orario settimanale dei corsi attivi' },
+  { command: 'updatecalendar', description: '(@username calendario) aggiorna il calendario del giocatore' },
   { command: 'help', description: 'Mostra una guida al bot' },
 ]);

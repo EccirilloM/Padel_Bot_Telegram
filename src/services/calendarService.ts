@@ -14,81 +14,23 @@ export const addCalendarToPlayer = async (username: string, courses: ParsedCours
     if (!player) {
       throw new Error(`Nessun giocatore trovato con username ${username}.`);
     }
-
-    for (const courseData of courses) {
-      let course = await prisma.course.findUnique({ where: { code: courseData.code } });
-
-      if (!course) {
-        course = await prisma.course.create({
-          data: {
-            code: courseData.code,
-            name: courseData.name,
-            courseStart: courseData.startDate,
-            courseEnd: courseData.endDate,
-          },
-        });
-        console.log(`Creato nuovo corso: ${courseData.code}`);
-      } else {
-        console.log(`Corso esistente trovato: ${courseData.code}`);
-      }
-
-      for (const lectureData of courseData.lectures) {
-        const startTime = dayjs(`${lectureData.startTime}`, 'HH:mm').toDate();
-        const endTime = dayjs(`${lectureData.endTime}`, 'HH:mm').toDate();
-
-        const existingLecture = await prisma.lecture.findFirst({
-          where: {
-            courseId: course.id,
-            day: lectureData.day,
-            startTime: startTime,
-            endTime: endTime
-          }
-        });
-
-        if (!existingLecture) {
-          await prisma.lecture.create({
-            data: {
-              day: lectureData.day,
-              startTime,
-              endTime,
-              courseId: course.id,
-            },
-          });
-          console.log(`Aggiunta nuova lezione per il corso ${courseData.code}: ${lectureData.day} dalle ${lectureData.startTime} alle ${lectureData.endTime}`);
-        } else {
-          console.log(`Lezione esistente trovata per ${courseData.code}: ${lectureData.day} dalle ${lectureData.startTime} alle ${lectureData.endTime}`);
-        }
-
-        const existingCalendar = await prisma.calendar.findFirst({
-          where: {
-            playerId: player.id,
-            courseId: course.id,
-            day: lectureData.day,
-            startTime: startTime,
-            endTime: endTime,
-          },
-        });
-
-        if (!existingCalendar) {
-          await prisma.calendar.create({
-            data: {
-              playerId: player.id,
-              courseId: course.id,
-              startTime,
-              endTime,
-              day: lectureData.day,
-            },
-          });
-          console.log(`Aggiunto calendario per ${username}, corso ${courseData.code}, ${lectureData.day} dalle ${lectureData.startTime} alle ${lectureData.endTime}`);
-        } else {
-          console.log(`Calendario esistente trovato per ${username}, corso ${courseData.code}, ${lectureData.day} dalle ${lectureData.startTime} alle ${lectureData.endTime}`);
-        }
-      }
-    }
+    await addCoursesAndLecturesToPlayer(player.id, courses);
   } catch (error) {
-    console.error("Errore durante l'aggiunta del calendario:", error);
     throw new Error("Errore durante l'aggiunta del calendario. Riprova più tardi.");
   }
+};
+
+export const updateCalendarForPlayer = async (username: string, newCourses: ParsedCourse[]): Promise<void> => {
+  const player = await prisma.player.findUnique({ where: { username } });
+  if (!player) {
+    throw new Error(`Nessun giocatore trovato con username ${username}.`);
+  }
+
+  // Elimina il calendario corrente dell'utente
+  await prisma.calendar.deleteMany({ where: { playerId: player.id } });
+
+  // Aggiungi i nuovi corsi e le lezioni
+  await addCoursesAndLecturesToPlayer(player.id, newCourses);
 };
 
 export const getWeeklyScheduleForPlayer = async (username: string): Promise<WeeklySchedule[]> => {
@@ -141,3 +83,71 @@ export const getWeeklyScheduleForPlayer = async (username: string): Promise<Week
   const activeCourses = filterActiveCourses(Object.values(coursesMap));
   return activeCourses;
 };
+
+// Helper function per aggiungere corsi e lezioni
+async function addCoursesAndLecturesToPlayer(playerId: number, courses: ParsedCourse[]): Promise<void> { // playerId è di tipo number
+  for (const courseData of courses) {
+    let course = await prisma.course.findUnique({ where: { code: courseData.code } });
+
+    if (!course) {
+      course = await prisma.course.create({
+        data: {
+          code: courseData.code,
+          name: courseData.name,
+          courseStart: courseData.startDate,
+          courseEnd: courseData.endDate,
+        },
+      });
+    } else {
+    }
+
+    for (const lectureData of courseData.lectures) {
+      const startTime = dayjs(`${lectureData.startTime}`, 'HH:mm').toDate();
+      const endTime = dayjs(`${lectureData.endTime}`, 'HH:mm').toDate();
+
+      const existingLecture = await prisma.lecture.findFirst({
+        where: {
+          courseId: course.id,
+          day: lectureData.day,
+          startTime,
+          endTime,
+        },
+      });
+
+      if (!existingLecture) {
+        await prisma.lecture.create({
+          data: {
+            day: lectureData.day,
+            startTime,
+            endTime,
+            courseId: course.id,
+          },
+        });
+      } else {
+      }
+
+      const existingCalendar = await prisma.calendar.findFirst({
+        where: {
+          playerId, // `playerId` è già number
+          courseId: course.id,
+          day: lectureData.day,
+          startTime,
+          endTime,
+        },
+      });
+
+      if (!existingCalendar) {
+        await prisma.calendar.create({
+          data: {
+            playerId, // `playerId` è già number
+            courseId: course.id,
+            startTime,
+            endTime,
+            day: lectureData.day,
+          },
+        });
+      } else {
+      }
+    }
+  }
+}
